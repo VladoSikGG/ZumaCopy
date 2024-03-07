@@ -17,7 +17,7 @@ public class BezierTest : MonoBehaviour
     void Update()
     {
         transform.position = Bezier.GetPoint(P0.position, P1.position, P2.position, P3.position, t);
-        transform.rotation = Quaternion.LookRotation(Bezier.GetFirstDerivative(P0.position, P1.position, P2.position, P3.position, t));
+        //transform.rotation = Quaternion.LookRotation(Bezier.GetFirstDerivative(P0.position, P1.position, P2.position, P3.position, t));
     }
 
 
