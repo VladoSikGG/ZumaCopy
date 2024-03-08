@@ -19,7 +19,7 @@ public class BallManager : MonoBehaviour
         color = _info.color;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
         if (speed < 0) speed = speed * -1;
 
@@ -36,9 +36,8 @@ public class BallManager : MonoBehaviour
         }
     }
     
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnCollisionExit2D(Collision2D other)
     {
-        
         if (speed > 0) speed = speed * -1;
         if (other.gameObject.GetComponent<BallManager>().color == color)
             _nearBalls--;
