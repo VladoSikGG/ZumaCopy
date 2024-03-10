@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class BallManager : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class BallManager : MonoBehaviour
     private GameObject _nearBall;
     public string color;
     public float speed;
+    public bool inLine;
+    public SplineContainer spline;
+    public float percent;
     private void Start()
     {
         //default settings
@@ -19,27 +23,12 @@ public class BallManager : MonoBehaviour
         color = _info.color;
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionEnter(Collision other)
     {
-        if (speed < 0) speed = speed * -1;
-
-        if (other.gameObject.GetComponent<BallManager>().color == color)
+        if (other.gameObject.tag == "Ball")
         {
-            _nearBall = other.gameObject;
-            _nearBalls++;
-            if (_nearBalls >= 2)
-            {
-                Destroy(other.gameObject);
-                Destroy(_nearBall);
-                Destroy(gameObject);
-            }
+            inLine = true;
+            spline = other.gameObject.GetComponent<SplineContainer>();
         }
-    }
-    
-    private void OnCollisionExit2D(Collision2D other)
-    {
-        if (speed > 0) speed = speed * -1;
-        if (other.gameObject.GetComponent<BallManager>().color == color)
-            _nearBalls--;
     }
 }

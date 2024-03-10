@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 565dc18b7f41f44369eae3b49f337147, type: 3}
-  m_Name: RedBall
+  m_Name: BallInfo
   m_EditorClassIdentifier: 
   pref: {fileID: 877866638618457076, guid: 596725b2536184ceeabf10409f8a6256, type: 3}
-  sprite: {fileID: 21300000, guid: 0c4ae9f477814416fb4db0316fe01eba, type: 3}
-  color: red
+  sprite: {fileID: 0}
+  color: 

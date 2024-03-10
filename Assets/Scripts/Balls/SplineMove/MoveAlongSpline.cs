@@ -7,12 +7,13 @@ using UnityEngine.Splines;
 
 public class MoveAlongSpline : MonoBehaviour
 {
-    [SerializeField] private SplineContainer _spline;
+    public SplineContainer _spline;
 
-    private float _speed;
+    public float _speed;
     private float _distancePercentage;
 
     private float _splineLength;
+    private bool _isTriggered;
 
     private void Start()
     {
@@ -22,10 +23,18 @@ public class MoveAlongSpline : MonoBehaviour
 
     private void Update()
     {
-        _speed = gameObject.GetComponent<BallManager>().speed;
-        _distancePercentage += _speed * Time.deltaTime / _splineLength;
-        Vector3 currentPos = _spline.EvaluatePosition(_distancePercentage);
-        Vector3 testPos = currentPos - transform.position;
-        GetComponent<Rigidbody2D>().MovePosition(currentPos); //= new Vector2(testPos.x, testPos.y);
+        if (GetComponent<BallManager>().inLine)
+        {
+            _spline = GetComponent<BallManager>().spline;
+            _speed = gameObject.GetComponent<BallManager>().speed;
+            _distancePercentage += _speed * Time.deltaTime / _splineLength;
+            Vector3 currentPos = _spline.EvaluatePosition(_distancePercentage);
+            Vector3 testPos = currentPos - transform.position;
+            GetComponent<Rigidbody2D>().MovePosition(currentPos); //= new Vector2(testPos.x, testPos.y);
+        }
+        else
+        {
+            GetComponent<Rigidbody2D>().AddForce(Camera.main.ScreenToWorldPoint(Input.mousePosition)* 10f);
+        }
     }
 }

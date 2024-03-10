@@ -1,0 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BallSpawner : MonoBehaviour
+{
+    public List<GameObject> allBall;
+    
+    
+}
