@@ -16,7 +16,12 @@ public class BallLogic : MonoBehaviour
     private float _splineLength;
     private bool _isTriggered = false;
     public bool _inline;
-    
+
+    private void Start()
+    {
+        if(_spline == null) GetComponent<Rigidbody2D>().AddForce(Camera.main.ScreenToWorldPoint(Input.mousePosition)* 10f);
+    }
+
     private void Update()
     {
         if (_spline != null)

@@ -162,6 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spline: {fileID: 0}
+  _color: purple
   _speed: 1
   _distancePercentage: 0
   _leveldistance: 0
