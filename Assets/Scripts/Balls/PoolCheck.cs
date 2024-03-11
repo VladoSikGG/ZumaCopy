@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class PoolCheck : MonoBehaviour
 {
-    public int _lastCount, _nearSomeBalls;
+    private int _lastCount, _nearSomeBalls;
+    [Range(0f,1f)]
+    public float levelDistance;
 
 
     private void Start()
@@ -19,11 +21,11 @@ public class PoolCheck : MonoBehaviour
         if (_lastCount != gameObject.transform.childCount)
         {
             _lastCount = gameObject.transform.childCount;
-            for (int i = 0; i < gameObject.transform.childCount; i++)
+            for (int i = 0; i < gameObject.transform.childCount-1; i++)
             {
                 Debug.Log($"iter{i}: {gameObject.transform.GetChild(i).name}");
-                if (gameObject.transform.GetChild(i).GetComponent<BallLogic>()._color == 
-                    gameObject.transform.GetChild(i+1).GetComponent<BallLogic>()._color)
+                if (gameObject.transform.GetChild(i).GetComponent<BallLogic>().GetColor() == 
+                    gameObject.transform.GetChild(i+1).GetComponent<BallLogic>().GetColor())
                 {
                     _nearSomeBalls++;
                     if (_nearSomeBalls == 2)
@@ -32,6 +34,14 @@ public class PoolCheck : MonoBehaviour
                         Destroy(gameObject.transform.GetChild(i).gameObject);
                         Destroy(gameObject.transform.GetChild(i+1).gameObject);
                         _nearSomeBalls = 0;
+                        if (i+1 != transform.childCount-1)
+                        {
+                            for (int j = 0; j < i-1; j++)
+                            {
+                                transform.GetChild(j).GetComponent<BallLogic>().MoveBack();
+                            }
+                        }
+                        
                     }
                 }
                 else

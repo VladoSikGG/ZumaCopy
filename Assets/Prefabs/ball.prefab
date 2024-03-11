@@ -161,9 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3c994bed2d8a476b9295c59f2bec1d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spline: {fileID: 0}
   _color: purple
-  _speed: 1
-  _distancePercentage: 0
-  _leveldistance: 0
+  _spline: {fileID: 0}
   _inline: 0
+  levelDistance: 0
