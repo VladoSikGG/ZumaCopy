@@ -10,20 +10,24 @@ public class BallLogic : MonoBehaviour
     
     [SerializeField] private SplineContainer _spline;
     
-    private float _speed = 1;
+    private float _speed = 0.5f;
     private float _distancePercentage;
     private float _splineLength;
     
-    private bool _isTriggered = false;
+    private bool _fromPlayer = false;
     public bool _inline;
     private float levelDistance;
+
+    private GameObject _pool;
 
     public bool movingBack;
 
     private void Start()
     {
-        levelDistance = GameObject.Find("Pool").GetComponent<PoolCheck>().levelDistance;
-        if(_spline == null) GetComponent<Rigidbody2D>().AddForce(Camera.main.ScreenToWorldPoint(Input.mousePosition)* 10f);
+        _pool = GameObject.Find("Pool");
+        levelDistance = _pool.GetComponent<PoolCheck>().levelDistance;
+        _speed = _pool.GetComponent<PoolCheck>().GetSpeed();
+        if(_spline == null) GetComponent<Rigidbody2D>().AddForce((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position)* 50f);
     }
 
     private void Update()
@@ -42,41 +46,69 @@ public class BallLogic : MonoBehaviour
             Vector3 currentPos = _spline.EvaluatePosition(_distancePercentage);
             transform.position = Vector3.MoveTowards(transform.position, currentPos, _speed);
         }
-        else
-        {
-            GetComponent<Rigidbody2D>().AddForce(Camera.main.ScreenToWorldPoint(Input.mousePosition)* 10f);
-        }
+        // else
+        // {
+        //     GetComponent<Rigidbody2D>().AddForce((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position)* 10f);
+        // }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ball") && _spline == null)
         {
-            _isTriggered = true;
-            BallLogic ballLogic = other.gameObject.GetComponent<BallLogic>();
+            _fromPlayer = true;
+            // if (GetColor() == other.gameObject.GetComponent<BallLogic>().GetColor())
+            // {
+            //     if (other.gameObject.transform.GetSiblingIndex() != _pool.transform.childCount-1)
+            //     {
+            //         for (int j = 0; j < other.gameObject.transform.GetSiblingIndex(); j++) 
+            //         {
+            //             _pool.transform.GetChild(j).GetComponent<BallLogic>().MoveBack(); 
+            //         }
+            //     }
+            //     Destroy(other.gameObject);
+            //     Destroy(gameObject);
+            //     
+            //     PlayerPrefs.SetInt("DestroyedBalls", PlayerPrefs.GetInt("DestroyedBalls")+2);
+            //     if (PlayerPrefs.GetInt("DestroyedBalls") >= 4)
+            //     {
+            //         PlayerPrefs.SetInt("Money", PlayerPrefs.GetInt("Money")+10);
+            //         PlayerPrefs.SetInt("DestroyedBalls", 0);
+            //     }
+            // }
+            // else
+            {
+                BallLogic ballLogic = other.gameObject.GetComponent<BallLogic>();
 
-            _spline = ballLogic.GetSpline();
-            _distancePercentage = ballLogic.GetPercentSpline();//+ levelDistance;
-            _speed = ballLogic.GetSpeed();
-            transform.position = other.gameObject.transform.position ;
-            gameObject.transform.SetParent(GameObject.Find("Pool").transform);
+                _spline = ballLogic.GetSpline();
+                _distancePercentage = ballLogic.GetPercentSpline();//+ levelDistance;
+                _speed = ballLogic.GetSpeed();
+                transform.position = other.gameObject.transform.position ;
+                gameObject.transform.SetParent(_pool.transform);
+                
+                transform.SetSiblingIndex(other.gameObject.transform.GetSiblingIndex());
+                InsertBall();
+            }
             
-            // int objIndex = (other.gameObject.transform.GetSiblingIndex() > 0)?
-            //     other.gameObject.transform.GetSiblingIndex() - 1 : 0;
-            transform.SetSiblingIndex(other.gameObject.transform.GetSiblingIndex());
-            InsertBall();
         }
 
-        else if (other.gameObject.CompareTag("Ball")
-                 && other.gameObject.GetComponent<BallLogic>().movingBack)
-        {
-            other.gameObject.GetComponent<BallLogic>().MoveForward();
-        }
+        //else
 
+    }
+
+    public bool GetInfoFromPlayer()
+    {
+        return _fromPlayer;
     }
 
     private void OnCollisionStay2D(Collision2D other)
     {
+        if (other.gameObject.CompareTag("Ball")
+            && other.gameObject.GetComponent<BallLogic>().movingBack
+            && movingBack != true)
+        {
+            other.gameObject.GetComponent<BallLogic>().MoveForward();
+        }
         // Debug.Log("STAY");
         // if (other.gameObject.CompareTag("Ball") && _inline==false)
         // {
