@@ -22,9 +22,12 @@ public class BallLogic : MonoBehaviour
 
     public bool movingBack;
 
+    private GameObject _gameManager;
+
     private void Start()
     {
         _pool = GameObject.Find("Pool");
+        _gameManager = GameObject.Find("GameManager");
         levelDistance = _pool.GetComponent<PoolCheck>().levelDistance;
         _speed = _pool.GetComponent<PoolCheck>().GetSpeed();
         if(_spline == null) GetComponent<Rigidbody2D>().AddForce((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position)* 50f);
@@ -94,6 +97,7 @@ public class BallLogic : MonoBehaviour
 
         //else
 
+        if (other.gameObject.CompareTag("Finish")) _gameManager.GetComponent<GameManagerr>().GameOver();
     }
 
     public bool GetInfoFromPlayer()

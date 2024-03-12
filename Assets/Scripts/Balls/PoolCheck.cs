@@ -8,6 +8,7 @@ public class PoolCheck : MonoBehaviour
 {
     private int _lastCount, _nearSomeBalls;
     [SerializeField] private float _levelSpeed;
+    [SerializeField] private GameManagerr _gameManager;
     [Range(0f,1f)]
     public float levelDistance;
 
@@ -24,6 +25,7 @@ public class PoolCheck : MonoBehaviour
     
      private void Update()
      {
+         if(transform.childCount <= 0 && Time.timeScale != 0) _gameManager.GameWin(); 
          if (_lastCount != gameObject.transform.childCount)
          {
              _lastCount = gameObject.transform.childCount;
@@ -32,9 +34,6 @@ public class PoolCheck : MonoBehaviour
                  BallLogic currentChildScript = transform.GetChild(i).GetComponent<BallLogic>();
                  if (currentChildScript.GetInfoFromPlayer())
                  {
-                     Debug.Log($"{currentChildScript.GetColor() == transform.GetChild(i+1).GetComponent<BallLogic>().GetColor()} &&" +
-                               $" {currentChildScript.GetColor() == transform.GetChild(i-1).GetComponent<BallLogic>().GetColor()}");
-
                      //List<GameObject> balls = new List<GameObject>();
                      for (int n = i+1; n < transform.childCount; n++)
                      {
@@ -45,6 +44,7 @@ public class PoolCheck : MonoBehaviour
                          }
                          else break;
                      }
+                     
                      for (int v = i-1; v >= 0; v--)
                      {
                          if (currentChildScript.GetColor() ==
