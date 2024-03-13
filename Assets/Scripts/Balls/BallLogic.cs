@@ -9,13 +9,15 @@ public class BallLogic : MonoBehaviour
     [SerializeField] private string _color;
     
     [SerializeField] private SplineContainer _spline;
+
+    [SerializeField] private float _speedForFly;
     
     private float _speed = 0.5f;
     private float _distancePercentage;
     private float _splineLength;
     
     private bool _fromPlayer = false;
-    public bool _inline;
+    //public bool _inline;
     private float levelDistance;
 
     private GameObject _pool;
@@ -26,11 +28,13 @@ public class BallLogic : MonoBehaviour
 
     private void Start()
     {
+        Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
         _pool = GameObject.Find("Pool");
         _gameManager = GameObject.Find("GameManager");
         levelDistance = _pool.GetComponent<PoolCheck>().levelDistance;
         _speed = _pool.GetComponent<PoolCheck>().GetSpeed();
-        if(_spline == null) GetComponent<Rigidbody2D>().AddForce((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position)* 50f);
+        Debug.Log(direction.normalized );
+        if (_spline == null) GetComponent<Rigidbody2D>().AddForce(direction.normalized *100*_speedForFly); 
     }
 
     private void Update()
@@ -57,7 +61,7 @@ public class BallLogic : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ball") && _spline == null)
+        if (other.gameObject.CompareTag("Ball") && _spline == null && other.gameObject.GetComponent<BallLogic>().GetSpline() != null)
         {
             _fromPlayer = true;
             // if (GetColor() == other.gameObject.GetComponent<BallLogic>().GetColor())
@@ -121,21 +125,27 @@ public class BallLogic : MonoBehaviour
         
     }
 
-    private void OnCollisionExit2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Ball"))
-        {
-            _inline = true;
-        }
-        
-    }
+    // private void OnCollisionExit2D(Collision2D other)
+    // {
+    //     if (other.gameObject.CompareTag("Ball"))
+    //     {
+    //         _inline = true;
+    //     }
+    //     
+    // }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.name == "StartWay" && transform.GetSiblingIndex() != transform.parent.childCount-1)
+
+        if (_spline != null)
         {
-            transform.parent.GetChild(transform.GetSiblingIndex()+1).gameObject.SetActive(true);
+            if (other.gameObject.name == "StartWay" && transform.GetSiblingIndex() != transform.parent.childCount-1)
+            {
+                transform.parent.GetChild(transform.GetSiblingIndex()+1).gameObject.SetActive(true);
+            }
         }
+            
+
     }
 
     public SplineContainer GetSpline()
@@ -172,6 +182,10 @@ public class BallLogic : MonoBehaviour
         _distancePercentage += distance;
     }
 
+    public void SetSpline(SplineContainer spline)
+    {
+        _spline = spline;
+    }
     public void InsertBall()
     {
         _distancePercentage += levelDistance;

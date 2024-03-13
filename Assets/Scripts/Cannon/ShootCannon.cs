@@ -66,8 +66,12 @@ public class ShootCannon : MonoBehaviour
     {
         // _nextBallView.GetComponent<SpriteRenderer>().sprite = 
         //     _nextBall.GetComponent<SpriteRenderer>().sprite;
-        _currentBallView.GetComponent<SpriteRenderer>().sprite = 
-            _currentBall.GetComponent<SpriteRenderer>().sprite;
+        if (_currentBall != null)
+        {
+            _currentBallView.GetComponent<SpriteRenderer>().sprite =
+                _currentBall.GetComponent<SpriteRenderer>().sprite;
+        }
+
     }
 
 }

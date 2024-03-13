@@ -9,6 +9,8 @@ public class StartInitialization : MonoBehaviour
     {
         if (!PlayerPrefs.HasKey("Money"))
         {
+            PlayerPrefs.SetFloat("Sounds", 100);
+            PlayerPrefs.SetFloat("Music", 100);
             PlayerPrefs.SetInt("Money", 200);
             PlayerPrefs.SetInt("Level", 1);
         }

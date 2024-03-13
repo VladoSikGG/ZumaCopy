@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Splines;
+using Random = UnityEngine.Random;
 
 public class PoolCheck : MonoBehaviour
 {
@@ -12,11 +15,18 @@ public class PoolCheck : MonoBehaviour
     [Range(0f,1f)]
     public float levelDistance;
 
-    public List<GameObject> balls;
+    [SerializeField] private int _countBalls;
+    [SerializeField] private GameObject[] _balls;
+    [SerializeField] private Transform _spawnPosition;
 
    // private int _ballsForDestroy = 1;
 
-    private void Start()
+   private void Awake()
+   {
+       GenerateBalls();
+   }
+
+   private void Start()
     {
         _lastCount = gameObject.transform.childCount;
     }
@@ -25,7 +35,9 @@ public class PoolCheck : MonoBehaviour
     
      private void Update()
      {
-         if(transform.childCount <= 0 && Time.timeScale != 0) _gameManager.GameWin(); 
+         
+         if(transform.childCount <= 0 && Time.timeScale != 0) _gameManager.GameWin();
+         
          if (_lastCount != gameObject.transform.childCount)
          {
              _lastCount = gameObject.transform.childCount;
@@ -34,7 +46,7 @@ public class PoolCheck : MonoBehaviour
                  BallLogic currentChildScript = transform.GetChild(i).GetComponent<BallLogic>();
                  if (currentChildScript.GetInfoFromPlayer())
                  {
-                     //List<GameObject> balls = new List<GameObject>();
+                     List<GameObject> balls = new List<GameObject>();
                      for (int n = i+1; n < transform.childCount; n++)
                      {
                          if (currentChildScript.GetColor() ==
@@ -120,5 +132,15 @@ public class PoolCheck : MonoBehaviour
      public float GetSpeed()
      {
          return _levelSpeed;
+     }
+
+     private void GenerateBalls()
+     {
+         for (int i = 0; i < _countBalls; i++)
+         {
+             GameObject GO = Instantiate(_balls[Random.Range(0, _balls.Length)], _spawnPosition.position, quaternion.identity, transform);
+             GO.GetComponent<BallLogic>().SetSpline(GameObject.Find("way").GetComponent<SplineContainer>());
+             if(i != 0) GO.SetActive(false);
+         }
      }
 }

@@ -163,5 +163,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _color: purple
   _spline: {fileID: 0}
+  _speedForFly: 5
   _inline: 0
   movingBack: 0
