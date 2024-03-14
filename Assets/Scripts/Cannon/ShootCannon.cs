@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 
 public class ShootCannon : MonoBehaviour
 {
+    [SerializeField] private Sprite[] _playerSkins;
+    [SerializeField] private SpriteRenderer _playerRenderer;
     public GameObject[] _ball;
     private GameObject _currentBall,
                        // _nextBall, 
@@ -15,10 +17,12 @@ public class ShootCannon : MonoBehaviour
 
     [SerializeField] private GameObject _currentBallView; //_nextBallView; 
 
+    public bool _havePool;
     private void Start()
     {
-        _pool = GameObject.Find("Pool");
-
+        _pool = FindObjectOfType<PoolCheck>().gameObject;
+        _playerRenderer.sprite = _playerSkins[PlayerPrefs.GetInt("CurrentSkin")];
+        InitializeCannonBall();
         _currentBall = InitializeCannonBall();
         //_nextBall = InitializeCannonBall();
         ViewBall();
@@ -26,11 +30,9 @@ public class ShootCannon : MonoBehaviour
 
     private void Update()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 dir = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
-
             GameObject bullet = Instantiate(_currentBall, transform.position, 
                 quaternion.identity).GameObject();
             _currentBall = InitializeCannonBall();
@@ -43,6 +45,13 @@ public class ShootCannon : MonoBehaviour
 
     private GameObject InitializeCannonBall()
     {
+        _pool = FindObjectOfType<PoolCheck>().gameObject;
+        // if (_pool.transform.childCount == 0)
+        // {
+        //     Destroy(_pool.GetComponent<PoolCheck>());
+        //     _pool = FindObjectOfType<PoolCheck>().gameObject;
+        // }
+        
         GameObject ball = null;
         if (_pool.transform.childCount > 0)
         {

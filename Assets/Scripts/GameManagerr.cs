@@ -8,10 +8,39 @@ public class GameManagerr : MonoBehaviour
 {
     [SerializeField] private GameObject _gameOverPanel, _winPanel, _pausePanel;
     [SerializeField] private AudioSource _winSound, _gameOverSound;
+    [SerializeField] private int _numLevel;
+    [SerializeField] private List<PoolCheck> _pools;
+
+    [SerializeField] private int _countClearPools;
+    [SerializeField] private int _startCountPools;
 
     private void Start()
     {
+        _startCountPools = _pools.Count;
         Time.timeScale = 1;
+    }
+
+    private void Update()
+    {
+        
+        for (int i = 0; i < _pools.Count; i++)
+        {
+            if (_pools[i] != null)
+            {
+                if (_pools[i].GetStatusPool())
+                {
+                    _countClearPools++;
+                    if (_countClearPools == _startCountPools && _pools.Count == 1)
+                    {
+                        GameWin();
+                    }
+                    Destroy(_pools[i]);
+                    _pools.RemoveAt(i);
+                }
+            }
+            
+        }
+        
     }
 
     public void GameOver()
@@ -26,8 +55,12 @@ public class GameManagerr : MonoBehaviour
         Time.timeScale = 0;
         _winPanel.SetActive(true);
         _winSound.Play();
-        int nextLevel = PlayerPrefs.GetInt("Level") + 1;
-        PlayerPrefs.SetInt("Level", nextLevel);
+        if (_numLevel == PlayerPrefs.GetInt("Level"))
+        {
+            int nextLevel = PlayerPrefs.GetInt("Level") + 1;
+            PlayerPrefs.SetInt("Level", nextLevel);
+        }
+        
     }
 
     public void GamePause()
@@ -43,19 +76,16 @@ public class GameManagerr : MonoBehaviour
 
     public void RestartLevel()
     {
-        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void GoToMenu()
     {
-        Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }
 
     public void NextLevel()
     {
-        Time.timeScale = 1;
         SceneManager.LoadScene($"Level{PlayerPrefs.GetInt("Level")}");
     }
 }

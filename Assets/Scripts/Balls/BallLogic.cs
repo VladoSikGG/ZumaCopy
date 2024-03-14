@@ -29,7 +29,7 @@ public class BallLogic : MonoBehaviour
     private void Start()
     {
         Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position);
-        _pool = GameObject.Find("Pool");
+        _pool = FindObjectOfType<PoolCheck>().gameObject;
         _gameManager = GameObject.Find("GameManager");
         levelDistance = _pool.GetComponent<PoolCheck>().levelDistance;
         _speed = _pool.GetComponent<PoolCheck>().GetSpeed();
@@ -64,6 +64,7 @@ public class BallLogic : MonoBehaviour
         if (other.gameObject.CompareTag("Ball") && _spline == null && other.gameObject.GetComponent<BallLogic>().GetSpline() != null)
         {
             _fromPlayer = true;
+            _spline = other.gameObject.GetComponent<BallLogic>().GetSpline();
             // if (GetColor() == other.gameObject.GetComponent<BallLogic>().GetColor())
             // {
             //     if (other.gameObject.transform.GetSiblingIndex() != _pool.transform.childCount-1)
@@ -91,17 +92,15 @@ public class BallLogic : MonoBehaviour
                 _distancePercentage = ballLogic.GetPercentSpline();//+ levelDistance;
                 _speed = ballLogic.GetSpeed();
                 transform.position = other.gameObject.transform.position ;
-                gameObject.transform.SetParent(_pool.transform);
+                gameObject.transform.SetParent(other.gameObject.transform.parent);
                 
                 transform.SetSiblingIndex(other.gameObject.transform.GetSiblingIndex());
-                InsertBall();
+                //InsertBall();
             }
             
         }
 
         //else
-
-        if (other.gameObject.CompareTag("Finish")) _gameManager.GetComponent<GameManagerr>().GameOver();
     }
 
     public bool GetInfoFromPlayer()
@@ -125,6 +124,10 @@ public class BallLogic : MonoBehaviour
         
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Finish") && _spline != null) _gameManager.GetComponent<GameManagerr>().GameOver();
+    }
     // private void OnCollisionExit2D(Collision2D other)
     // {
     //     if (other.gameObject.CompareTag("Ball"))
@@ -185,6 +188,16 @@ public class BallLogic : MonoBehaviour
     public void SetSpline(SplineContainer spline)
     {
         _spline = spline;
+    }
+
+    public void SetPool(GameObject pool)
+    {
+        _pool = pool;
+    }
+    
+    public void FromPlayerToLine()
+    {
+        _fromPlayer = false;
     }
     public void InsertBall()
     {
